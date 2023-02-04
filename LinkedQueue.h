@@ -36,12 +36,19 @@ public:
 
 	void enqueue(const T& item) {
 		QueueNode<T>* nodeToInsert = new QueueNode<T>(item);
-		back = nodeToInsert;
-		back->next = nodeToInsert;
-		
 
 		if (front == nullptr) {
 			front = nodeToInsert;
+		}
+		else {
+			back = front;
+			while(true) {
+				if (back->next == nullptr) {
+					break;
+				}
+				back = back->next;
+			}
+			back->next = nodeToInsert;
 		}
 
 		size++;
