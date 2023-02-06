@@ -25,7 +25,9 @@ public:
 		size = 0;
 		front = back = nullptr;
 	}
-
+	LinkedQueue(const T& value) {
+		enqueue(value);
+	}
 	~LinkedQueue() {
 		while (front != nullptr) {
 			QueueNode<T>* nextNode = front->next;
