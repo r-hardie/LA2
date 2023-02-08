@@ -8,7 +8,7 @@ using namespace std;
 template<typename T>
 class QueueNode {
 public:
-	QueueNode(){
+	QueueNode() {
 	}
 	QueueNode(const T& v) {
 		value = v;
@@ -19,14 +19,37 @@ public:
 };
 
 template<typename T>
+class ItemWithPriority {
+public:
+	ItemWithPriority() {}
+	ItemWithPriority(T v, int p) : value(v), prio(p) {}
+	T getValue() {
+		return value;
+	}
+	void setValue(T v) {
+		value = v;
+	}
+	void setPrio(int p) {
+		prio = p;
+	}
+	int getPrio() {
+		return prio;
+	}
+private:
+	T value;
+	int prio;
+};
+
+template<typename T>
 class LinkedQueue {
 public:
 	LinkedQueue() {
 		size = 0;
 		front = back = nullptr;
 	}
-	LinkedQueue(const T& value) {
-		enqueue(value);
+	LinkedQueue(T v) {
+		size = 0;
+		enqueue(v);
 	}
 	~LinkedQueue() {
 		while (front != nullptr) {
@@ -44,7 +67,7 @@ public:
 		}
 		else {
 			back = front;
-			while(true) {
+			while (true) {
 				if (back->next == nullptr) {
 					break;
 				}
@@ -85,5 +108,80 @@ private:
 	QueueNode<T>* back;
 	int size;
 
+};
+
+template<typename T>
+class PriorityQueue {
+public:
+	PriorityQueue() {
+		for (int i = 0; i < 10; i++) {
+			queues[i] = nullptr;
+		}
+	}
+	~PriorityQueue() {
+		for (int i = 0; i < 10; i++) {
+			if (queues[i] != nullptr) {
+				delete queues[i];
+			}
+		}
+	}
+
+	void enqueue(T& itemP) {
+		queues[itemP.getPrio() - 1] = new LinkedQueue<T>(itemP);
+
+		/*	for (int i = 9; i >= 0; i--) {      //Giving up implementing FIFO between equal priorities
+				T tempPrio;
+				if (queues[i] != nullptr) {
+
+					LinkedQueue<T> comparePrio = *queues[i];
+					tempPrio = comparePrio.dequeue();
+
+					if (tempPrio.getPrio() < itemP.getPrio()) {
+						for (int j = 0; j < i; j++) {
+							if (queues[j + 1] != nullptr) {
+								queues[j] = new LinkedQueue<T>(*queues[j + 1]);
+							}
+						}
+						queues[i] = new LinkedQueue<T>(itemP);
+						break;
+					}
+				}
+				else {
+					queues[i] = new LinkedQueue<T>(itemP);
+					break;
+				}
+			}
+
+	}
+
+	T dequeue() {
+		for (int i = 10; i > 0; --i) {
+			if (queues[i - 1]->isEmpty() == false) {
+				return queues[i - 1]->dequeue();
+			}
+		}
+		/*T result;                           //Giving up implementing FIFO between equal priorities
+		for (int i = 10; i > 0; i--) {
+			if (queues[i - 1] != nullptr) {
+				result = queues[i - 1]->dequeue();
+				break;
+				//return queues[i - 1]->dequeue();
+			}
+		}
+		for (int i = 9; i > 0; i--) {
+			queues[i] = queues[i - 1];
+			if (i == 1) {
+				queues[i] = nullptr;
+			}
+			if (queues[i - 1] == nullptr) {
+				break;
+			}
+		}
+
+		return result;*/
+	}
+
+private:
+	LinkedQueue<T>* queues[10];
 };
 #endif
